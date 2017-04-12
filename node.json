@@ -1,0 +1,40 @@
+{
+  "builders": [{
+    "type": "docker",
+    "image": "centos",
+    "commit": true,
+    "changes": [
+      "EXPOSE 8080",
+      "CMD [\"/entrypoint.sh\"]"
+    ]
+  }],
+
+  "provisioners": [{
+    "type": "shell",
+    "script": "install-node.sh"
+  },
+  {
+     "type": "file",
+     "source": "webapp/web_server.js",
+     "destination": "/home/webapp/web_server.js"
+  },
+  {
+     "type": "file",
+     "source": "entrypoint.sh",
+     "destination": "/entrypoint.sh"
+  },
+  {
+     "type": "shell",
+     "inline": [
+        "chmod -v +x /entrypoint.sh"
+     ]
+  }],
+
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "node/packer"
+    }
+  ]
+
+}
